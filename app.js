@@ -27,6 +27,7 @@ app.set("view engine", "ejs");
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -40,6 +41,8 @@ app.get("/secret", (req, res) => {
 });
 
 //Auth Routes
+
+//register
 app.get("/register", (req, res) => {
     res.render("register");
 });
@@ -54,6 +57,17 @@ app.post("/register", (req, res) => {
             res.redirect("secret");
         });
     });
+});
+
+//login
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/secret",
+    failureRedirect: "/login"
+}), (req, res) => {
 });
 
 app.listen(PORT, "localhost", () => {
